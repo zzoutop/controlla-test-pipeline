@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI(
     title="Controlla Test Pipeline API",
@@ -15,9 +16,9 @@ class HealthResponse(BaseModel):
 
 class Item(BaseModel):
     name: str
-    description: str = None
+    description: Optional[str] = None
     price: float
-    tax: float = None
+    tax: Optional[float] = None
 
 
 @app.get("/")
@@ -36,7 +37,7 @@ async def health_check():
 
 
 @app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str = None):
+async def read_item(item_id: int, q: Optional[str] = None):
     """Get an item by ID with optional query parameter."""
     return {"item_id": item_id, "q": q}
 
@@ -44,7 +45,7 @@ async def read_item(item_id: int, q: str = None):
 @app.post("/items/")
 async def create_item(item: Item):
     """Create a new item."""
-    item_dict = item.dict()
+    item_dict = item.model_dump()
     if item.tax:
         price_with_tax = item.price + item.tax
         item_dict.update({"price_with_tax": price_with_tax})
