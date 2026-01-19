@@ -197,7 +197,9 @@ async def train_model(request: TrainRequest):
             detail=f"Error creating database record: {str(e)}",
         ) from e
 
-    # call modal for training job
+    clear_files_func = modal.Function.from_name("controlla-train-music", "clear_files")
+    clear_files_func.remote()
+
     upload_files_func = modal.Function.from_name(
         "controlla-train-music", "upload_files"
     )
