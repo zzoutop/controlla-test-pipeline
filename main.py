@@ -204,10 +204,10 @@ async def train_model(request: TrainRequest):
         "controlla-train-music", "upload_files"
     )
     for file_path in file_path_list:
-        upload_files_func.remote(file_path)
+        upload_files_func.remote(file_path, new_record["id"])
 
     modal_train_job = modal.Function.from_name("controlla-train-music", "train")
-    modal_train_job.spawn()
+    modal_train_job.spawn(job_id=new_record["id"])
 
     try:
         db = get_db()
